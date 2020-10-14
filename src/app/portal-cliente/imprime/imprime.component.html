@@ -1,0 +1,127 @@
+<div style="background: #e0e0e0"><br>
+  <div class="container sheet" id="content" #content ><br>
+    <div class="row align-items-center justify-content-between">
+      <div class="col-md-5">
+        <tr>
+          <th> <img src="https://arisoft.com.mx/app/assets/app_logo.png"  alt="" style="width:110px"> </th>
+          <th><p style="font-family: 'roboto';
+            font-weight: bold;
+            font-size: 17pt;
+            margin-left: 15px;
+            margin-bottom: 0;">Arisoft App</p>
+            <p style="font-family: 'roboto thin';
+            font-weight: bold;
+            font-size: 12pt;
+            margin-left: 15px;
+            margin-bottom: 0;">Portal de Administración</p></th>
+        </tr>
+      </div>
+      <div class="col-md-5 text-right" style="padding-right: 50px"> 
+          {{myDate | date:'dd' }} de {{myDate | date:'MMMM' }} de {{myDate | date:'yyyy' }}
+      </div>
+    </div>
+
+    <div class="row" style="padding-top: 30px;"></div>
+    <h1 style="padding-left: 15px; font-family: 'roboto';">Reporte de detalles de conteo</h1>
+    <h6 style="padding-left: 15px; margin-top: -5px; color: #828282; padding-bottom: 5px;font-family: 'roboto';">{{reporte}}</h6>
+    <div class="row">
+      <div class="col-md-12" style="padding-left: 30px">
+          <table>
+            <tr>
+              <td class="title">Empresa:  </td>
+              <td>{{user.Empresa}}</td> 
+            </tr>
+            <tr>
+              <td class="title">Usuario: </td>
+              <td>{{user.Username}}</td>
+            </tr>
+          </table>
+      </div>
+    </div>
+
+    <div class="row" style="padding-top: 15px;"></div>
+
+    <div style="padding-left: 15px; padding-right: 30px">
+      <div class="d-flex align-items-center p-3 my-3  bg-purple shadow-sm cajita">
+        <div class="lh-100">
+          <h5 class="title">Detalles del conteo</h5>
+          <table>
+            <tr>
+              <td class="title">Folio: </td>
+              <td>000{{conteo.id_conteo}}</td>
+            </tr>
+            <tr>
+              <td class="title">Realizado por:</td>
+              <td>{{conteo.username}}</td>
+            </tr>
+            <tr>
+              <td class="title"> Almacén:</td>
+              <td>{{conteo.nombre_alm}}</td> 
+            </tr>
+            <tr>
+              <td class="title">Fecha:</td>
+              <td>{{conteo.fecha | date:'dd' }} de {{conteo.fecha | date:'MMMM' }} de {{conteo.fecha | date:'yyyy' }}</td>
+            </tr>
+            <tr>
+              <td class="title">Estado:</td>
+              <td [style.color]="getColor(conteo.estado)" style="font-weight: 900;">{{conteo.estado}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="padding-top: 15px;"></div>
+    <div class="row">
+      <div class="table-responsive" style="padding-left: 30px;padding-right: 40px;">
+        <table class="table table-sm" style="margin-bottom: 0px;">
+          <thead>
+            <tr style="font-family: 'Roboto Condensed'; "  class="d-flex" >
+              <th scope="col" class="col-3 ">Código</th>
+              <th scope="col" class="col-3">Producto</th>
+              <th scope="col" class="col-2 text-center">Existencia</th>
+              <th scope="col" class="col-2 text-center">Conteo</th>
+              <th scope="col" class="col-1 text-center">Diferencia</th>
+              <th scope="col" class="col-1 text-center">Series</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+    <div class="row" *ngFor = "let articulo of articulos_filter"> <!--REPEAT *NGFOR --- LINEAS DE LA TABLA-->
+      <div class="table-responsive" style="padding-left: 30px;padding-right: 40px;">
+        <table class="table table-sm" style="margin-bottom: 0px;">
+            <tr style="font-family: 'Roboto'; "  class="d-flex" >
+              <td scope="col" class="col-3 ">{{articulo.cod_prod}}</td>
+              <td scope="col" class="col-3">{{articulo.descripcion}}</td>
+              <td scope="col" class="col-2 text-center">{{articulo.existencia}}</td>
+              <td scope="col" class="col-2 text-center">{{articulo.conteo}}</td>
+              <td scope="col" class="col-1 text-center">{{articulo.diferencia}}</td>
+              <td scope="col" class="col-1 text-center">{{articulo.es_series}}</td>          
+            </tr>
+        </table>
+      </div>
+      <div class="col-md-8 offset-2" style="padding-top:5px" *ngIf = "articulo.es_series === 'S'"> <!--TABLA DE SERIES *NGIF -->
+        <table class="table table-sm table-striped table-bordered">
+          <thead class="thead-grey">
+            <tr class="d-flex">
+              <th scope="col" class="col-9" style="border-top-left-radius: 13px;">Serie</th>
+              <th scope="col" class="col-3 text-center" style="border-top-right-radius: 13px;">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="d-flex" *ngFor = "let serie of series">
+              <td class="col-9" *ngIf = "articulo.cod_prod === serie.cod_prod">{{serie.serie}}</td>
+              <td class="col-3 text-center" *ngIf = "articulo.cod_prod === serie.cod_prod">{{serie.estatus}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="foot" text-right>
+    <button type="button" class="btn btn-secondary rounded-pill" (click) = "regresar()" style="margin-right: 2%; padding-left: 35px; padding-right: 35px;">Regresar</button>
+    <button type="button" class="btn btn-primary rounded-pill" (click) = "descargarPDF()" style="padding-left: 35px; padding-right: 35px;">Imprimir</button>
+  </div>
+</div>

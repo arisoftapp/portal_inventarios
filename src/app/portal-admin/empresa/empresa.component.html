@@ -1,0 +1,252 @@
+<div >
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom">
+    <h1 class="h1">{{empresa.nombre_empresa}}</h1> <br>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <button type="button" class="btn btn-sm btn-primary rounded-pill btn-opc" style="margin-right: 10px;" title="Editar detalles de la empresa" 
+        data-toggle="modal" data-target="#ModificarEmpresa" (click) = "getModificarEmpresa()">
+        <i class="fas fa-edit" style=" margin-right: 5px;"></i>Editar empresa</button>
+    </div>
+  </div>
+  <br>
+  <div class="col-md-9 offset-1">
+    <div class="card cardd">
+      <div class="card-body">
+        <h5 class="card-title">Detalles</h5>
+        <table>
+          <tr>
+            <td class="title">Nombre de la Empresa:  </td>
+            <td>{{empresa.nombre_empresa}}</td>
+          </tr>
+          <tr>
+            <td class="title">Puerto de Conexión:</td>
+            <td>{{empresa.dominio}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+   <br>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom">
+  <h5 class="h5">Usuarios de la empresa</h5> <br>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <button type="button" class="btn btn-sm btn-primary rounded-pill btn-opc" data-toggle="modal" data-target="#RegistroUsuario">
+      <i class="fas fa-user-plus" style=" margin-right: 5px;"></i>Nuevo usuario</button>
+  </div>
+</div>
+<table class="table">
+  <thead>
+    <tr> 
+      <th scope="col">ID</th>
+      <th scope="col">Nombre de usuario</th>
+      <th scope="col" class="text-center">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor = "let usuario of usuarios">
+        <td scope="row">{{usuario.id_user}}</td>
+        <td>{{usuario.username}}</td>
+      <td class="text-center">
+        <button type="button" class="btn btn-primary" style="margin-right: 10px;" data-toggle="tooltip" data-placement="left" 
+        title="Ver más"data-toggle="modal" data-target="#DetallesUsuario" (click)="getDetallesUsuario(usuario)">
+          <i class="fas fa-info-circle"></i></button>
+        
+        <button type="button" class="btn btn-danger" title="Deshabilitar usuario"data-toggle="modal" data-target="#confirm"><i class="fas fa-user-slash" ></i></button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- MODAL MODIFICAR EMPRESA-->
+<div class="modal fade" id="ModificarEmpresa" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Editar detalles de empresa</h5>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="ModificarEmpresaForm">
+            <div class="form-group">
+              <label for="empresa">Nombre de la empresa:</label>
+              <input type="text" class="form-control" id="mod_empresa" name="mod_empresa" formControlName = "mod_empresa" placeholder="Nombre de la empresa">
+            </div>
+            <div class="form-group form-inline">
+              <label for="puerto">Puerto de WebService:</label>
+              <input type="text" class="form-control" id="mod_puerto" formControlName="mod_puerto" placeholder="Puerto" style="margin-left: 10px;">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary" (click)="updateEmpresa()" data-dismiss="modal" [disabled]="ModificarEmpresaForm.controls.mod_empresa.pristine && ModificarEmpresaForm.controls.mod_puerto.pristine">Actualizar datos</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+<!-- MODAL REGISTRAR USUARIO-->
+<div class="modal fade" id="RegistroUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Registro de nuevo usuario</h5>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="RegistrarUsuarioForm" (ngSubmit)="this.onSubmit()">
+            <div class="form-group col-md-9">
+              <label for="empresa">Nombre de usuario:</label>
+              <input type="text" class="form-control" id="username" formControlName = "username" placeholder="Nombre de usuario">
+            </div>
+            <div class="form-group form-inline col-md-8"> 
+              <label for="puerto">Contraseña:  </label>
+              <input type="password" class="form-control" id="password" formControlName = "password" placeholder="Contraseña" style="margin-left: 10px;">
+            </div>
+            <h6>Permisos</h6>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="portalusuario" formControlName = "portalusuario">
+              <label class="form-check-label" for="portalusuario">Arisoft Wep App (Portal de consulta)</label>
+            </div>
+            <div class="form-group form-check" >
+                <input type="checkbox" class="form-check-input" id="appmovil" formControlName = "appmovil" (click)="enableAppModules(RegistrarUsuarioForm)">
+                <label class="form-check-label" for="appmovil">Arisoft App (Aplicación móvil)</label>
+            </div>
+            <!--PERMISOS DE APLICACIÓN MÓVIL-->
+            <div class="app-permissions col-md-8 offset-2">
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="existencia" formControlName = "existencia">
+                    <label class="form-check-label" for="existencia">Consulta de existencia</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="existencia_alm" formControlName = "existencia_alm">
+                    <label class="form-check-label" for="existencia_alm">Consulta de existencia por almacén</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="articulos" formControlName = "articulos">
+                    <label class="form-check-label" for="articulos">Consulta de articulos</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="precios" formControlName = "precios">
+                    <label class="form-check-label" for="precios">Consulta de articulos con precio</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="familias" formControlName = "familias">
+                    <label class="form-check-label" for="familias">Consulta de familias</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="ajuste" formControlName = "ajuste">
+                    <label class="form-check-label" for="ajuste">Ajuste de inventario</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="entrega" formControlName = "entrega">
+                    <label class="form-check-label" for="entrega">Entrega</label>
+                </div>
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="recibido" formControlName = "recibido">
+                    <label class="form-check-label" for="recibido">Recibido</label>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary" (click) = "this.onSubmit()" data-dismiss="modal" [disabled]="!RegistrarUsuarioForm.valid">Registrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- MODAL DETALLES DE USUARIO-->
+<div class="modal fade" id="DetallesUsuario" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Detalles de usuario</h5>
+        <button type="button" class="btn btn-success" style="margin-right: 10px;" title="Editar usuario" [ngClass]="{
+                  'btn-modificar': EditUser }" (click)="setEditUser(DetallesUsuarioForm)">
+          <i class="fas fa-edit"></i></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="DetallesUsuarioForm" (ngSubmit)="this.onSubmit()">
+          <div class="form-group">
+            <label for="det_username">Nombre de usuario:</label>
+            <input type="text" class="form-control" id="det_username" formControlName="det_username" placeholder="Nombre de usuario" [readonly]="!EditUser">
+          </div>
+          <div class="input-group col-md-7">
+            <label for="det_password">Contraseña: </label>
+            <input [type]="ShowPass ? 'text' : 'password'" class="form-control" id="det_password" formControlName="det_password" placeholder="Contraseña" style="margin-left: 10px;" [readonly]="!EditUser">
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="showPass()"
+               [ngClass]="{'active': ShowPass }"><i class="fas " [ngClass]="{'fa-eye': ShowPass, 'fa-eye-slash' : !ShowPass }"></i></button>
+            </div>
+          </div>
+          <!--PERMISOS DEL USUARIO-->
+          <h6>Permisos</h6>
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="det_portalusuario" formControlName="det_portalusuario" >
+            <label class="form-check-label" for="det_portalusuario">Arisoft Wep App (Portal de consulta)</label>
+          </div>
+          <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="det_appmovil" formControlName="det_appmovil" (click)="enableDetAppModules(DetallesUsuarioForm)">
+            <label class="form-check-label" for="det_appmovil">Arisoft App (Aplicación móvil)</label>
+          </div>
+          <div class="app-permissions col-md-8 offset-2">
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_existencia"  formControlName="det_existencia">
+              <label class="form-check-label" for="det_existencia">Consulta de existencia</label>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_existencia_alm"  formControlName="det_existencia_alm">
+              <label class="form-check-label" for="det_existencia_alm">Consulta de existencia por almacén</label>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_articulos"  formControlName="det_articulos">
+              <label class="form-check-label" for="det_articulos">Consulta de articulos</label>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_precios" formControlName="det_precios">
+              <label class="form-check-label" for="det_precios">Consulta de articulos con precio</label>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_familias"  formControlName="det_familias">
+              <label class="form-check-label" for="det_familias">Consulta de familias</label>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_ajuste" formControlName="det_ajuste">
+              <label class="form-check-label" for="det_ajuste">Ajuste de inventario</label>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_entrega" formControlName="det_entrega">
+              <label class="form-check-label" for="det_entrega">Entrega</label>
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="det_recibido" formControlName="det_recibido">
+              <label class="form-check-label" for="det_recibido">Recibido</label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary" (click)="this.onSubmit()" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MODAL CONFIRMAR DESHABILITAR USUARIO-->
+<div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <br><br> ¿Está seguro que desea deshabilitar a este usuario? <br> <br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" (click) = "usuarioDown()" data-dismiss="modal">Deshabilitar</button>
+        </div>
+      </div>
+    </div>
+  </div>

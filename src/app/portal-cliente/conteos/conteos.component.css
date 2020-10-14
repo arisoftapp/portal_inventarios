@@ -1,0 +1,11 @@
+.filters{
+    margin-right: auto;
+    margin-left: 20px;
+    font-size: 10pt;
+    color: dimgray;
+    font-weight: bold;
+}
+
+.status{
+    margin-left: 20px;
+}

@@ -1,0 +1,114 @@
+<div class="row" style="margin-right: 0;">
+  <nav class="col-md-3 col-lg-3 d-none d-md-block bg-light sidebar back" style="background-color: rgb(236, 236, 236)!important;">
+    <br>
+    <div style="text-align: center;">
+        <img src="../../assets/app_logo2.png"  style="width:50%; cursor: pointer;" alt="Arisoft" (click)="toAdmin()">
+    </div>  <br>
+    <div class="sidebar-sticky text-white" style="font-family: 'Roboto'; font-size: 11pt;">
+      <ul class="nav flex-column">
+        <li class="nav-item" *ngFor = "let empresa of empresas" (click) = "detalle(empresa)" style="cursor: pointer;">
+          <a class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            {{empresa.nombre_empresa}} <span class="sr-only"></span>
+          </a>
+        </li>
+      </ul>
+      <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1" style="cursor: pointer; color: #eaeaea !important;" data-toggle="modal" data-target="#RegistroModal" >
+        <span>REGISTRO DE NUEVA EMPRESA</span>
+        <a class="d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle" ><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        </a>
+      </h6>
+    </div>
+  </nav>
+  <div class="col-md-9 col-lg-9" style="padding: 0;">
+    <nav class="navbar navbar-light bg-light" style="background-color: #eaeaea !important;">
+      <span class="navbar-brand mb-0 h1" style="letter-spacing: 6px; font-size: 14pt; color: #6c757d;font-family: 'Roboto';"></span>
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          <a class="nav-link">
+            <a class="textuser">{{admin.admin_username}}</a>
+            <button type="button" class="btn btn-logout rounded-pill" data-toggle="modal" data-target="#confirmModal">
+              Cerrar Sesión
+            </button>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    <div class="col-md-12">
+      <router-outlet></router-outlet>
+    </div>
+    <footer class="footer">
+      <div class="container" style="top: 30%;">
+        <br>
+        <img src="https://arisoft.com.mx/app/assets/arisoft_logo_2.png" alt="ARISOFT" style="width: 15%" ><span>®</span><br>
+        <span class="text-muted">Arisoft Wep App © Todos los derechos reservados. Arisoft 2018-2019</span>
+      </div>
+    </footer>
+      <div style="position: fixed; bottom: 3%; left: -3%; width: 100%;">
+        <div class="alert alert-success" role="alert" *ngIf = "Success === true" style="text-align: right;float: right;box-shadow: -2px -2px 11px 0px grey"   >
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="float:left">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="alert-heading">Empresa Registrada</h4>
+          <hr>
+          <p>Se ha registrado la empresa con éxito.</p>
+        </div>
+
+      <div style="position: fixed; bottom: 3%; left: -3%; width: 100%;">
+          <div class="alert alert-danger" role="alert" *ngIf = "Success === false" style="text-align: right;float: right;box-shadow: -2px -2px 11px 0px grey" >
+              <button type="button" class="close" (click)="closeAlert()" aria-label="Close" style="float:left">
+                <span>&times;</span>
+              </button>
+              <h5 class="alert-heading">Lo intentamos, pero no pudo funcionar...</h5>
+              <hr>
+              <p>Se produjo un error al intentar registrar la empresa.</p>
+            </div>
+          </div>
+      </div>
+    </div>
+</div> 
+
+<!-- CONFIRMACIÓN CERRAR SESIÓN -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        
+        <div class="modal-body">
+          <br><br> ¿Está seguro que desea salir? <br> <br>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click) = "logout()" data-dismiss="modal">Cerrar Sesión</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- REGISTRAR UNA EMPRESA -->
+<div class="modal fade" id="RegistroModal" tabindex="-1" role="dialog" aria-labelledby="exampleModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Registro de nueva empresa</h5>
+        
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="EmpresaForm" (ngSubmit) = "onSubmit()">
+          <div class="form-group">
+            <label for="empresa">Nombre de la empresa:</label>
+            <input type="text" class="form-control" id="empresa" formControlName = "empresa" placeholder="Nombre de la empresa">
+          </div>
+          <div class="form-group form-inline"> 
+            <label for="puerto">Puerto de WebService:  </label>
+            <input type="text" class="form-control" id="puerto" formControlName = "puerto" placeholder="Puerto" style="margin-left: 10px;">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary" (click) = "onSubmit()" data-dismiss="modal" [disabled]="!EmpresaForm.valid">Registrar</button>
+      </div>
+    </div>
+  </div>
+</div>

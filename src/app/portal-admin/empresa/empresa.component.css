@@ -1,0 +1,32 @@
+
+.btn-modificar {
+    box-shadow: 0px 0px 0px 5px rgba(40,167,69,0.5);
+    border: none;
+    background-color: #1e7e34;
+}
+
+.cajita{
+    background-color:rgba(0,0,0,.12); 
+    border-radius: 1.25rem
+}
+
+.btn-opc {
+    font-family: 'roboto';
+    margin-right: 10px;
+    font-size: 10pt;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.app-permissions {
+    border: 2px solid #673AB7;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.cardd {
+    border: none;
+    box-shadow: 0px 11px 62px -2px rgba(179,179,179,1);
+}

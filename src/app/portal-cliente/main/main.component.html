@@ -1,0 +1,45 @@
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+<nav class="navbar navbar-light barra flex-md-nowrap p-0" *ngIf = "into">
+  <a class="navbar-brand col-sm-3 col-md-5 mr-0" style="box-shadow: none;font-size: 0.8rem;" href="#">
+      <img src="http://arisoft.com.mx/app/assets/app_logo.png"  style="width:85px;" alt="">
+      <p class="navbar-text" style="margin-bottom: 0px;font-family: 'Roboto';
+      font-size: 12pt; font-weight: bold;margin-left: 10%;position: absolute; top: 25%;
+      padding-top: 0px;color:#495057">{{user.Empresa}} <br> {{user.Username}} </p>
+  </a>
+  <ul class="navbar-nav px-3">
+    <li class="nav-item text-nowrap">
+      <a class="nav-link" >
+        <button type="button" class="btn btn-logout" data-toggle="modal" data-target="#confirmModal">
+        Cerrar Sesión
+      </button>
+      </a>
+    </li>
+  </ul>
+</nav>
+<router-outlet></router-outlet>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.4.6/angular-locale_es-es.js"></script>
+<footer class="footer">
+    <div class="container" style="top: 30%;">
+      <br>
+      <img src="https://arisoft.com.mx/app/assets/arisoft_logo_2.png" alt="ARISOFT" style="width: 15%" ><span>®</span><br>
+      <span class="text-muted">Arisoft Wep App © Todos los derechos reservados. Arisoft 2018-2019</span>
+    </div>
+  </footer>
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      
+      <div class="modal-body">
+        <br><br> ¿Está seguro que desea salir? <br> <br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" (click) = "logout()" data-dismiss="modal">Cerrar Sesión</button>
+      </div>
+    </div>
+  </div>
+</div>

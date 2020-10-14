@@ -1,0 +1,35 @@
+.sheet {
+    background: white;
+    padding-left: 50px;
+    padding-right: 30px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.title{
+    font-family: 'Roboto Condensed';
+    font-weight: bold;
+}
+
+.cajita{
+    background-color:rgba(0,0,0,.12); 
+    border-radius: 1.25rem
+}
+
+td {
+    padding-right: 10px;
+  }
+
+  .table .thead-grey th {
+    color: #fff;
+    background-color: #30334a;
+}
+
+.foot {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 30px;
+    padding-right: 40px;
+    background-color: #b9b9b9;
+    text-align: right;
+}

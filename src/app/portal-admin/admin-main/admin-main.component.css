@@ -1,0 +1,28 @@
+.btn-logout {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #0823b3;
+    color: white;
+    text-transform: uppercase;
+    font-family: 'Roboto';
+    font-size: 10pt;
+}
+
+.btn-logout:hover{
+    background-color: #2a40b7
+}
+
+.textuser {
+    margin-right: 20px;
+    font-family: 'Roboto';
+    cursor: default;
+}
+
+.back{
+    background: rgb(23,43,73);
+background: linear-gradient(180deg, rgba(184,222,255,1) 0%, rgba(0,136,251,1) 45%, rgba(20,55,129,1) 100%);
+    font-family: 'Roboto';
+    color: white;
+}

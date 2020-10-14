@@ -1,0 +1,304 @@
+<ngx-spinner></ngx-spinner>
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <main role="main" class="col-md-10">
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Consulta de conteo</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="print" data-toggle="tooltip" data-placement="bottom" title="Generar Archivos E/S"
+            style="margin-top: auto;">
+            <i class="fa fa-file-alt" role="button" (click)="generar_txt()"></i>
+          </div>
+          <div class="print" data-toggle="tooltip" data-placement="bottom" title="Generar Archivo Inventario Fisico"
+            style="margin-top: auto;">
+            <i class="fas fa-file-download" role="button" (click)="generar_InvFisico()"></i>
+          </div>
+          <div class="print" data-toggle="tooltip" data-placement="bottom" title="Imprimir conteo"
+            style="margin-top: auto;">
+
+            <i class="fa fa-print" role="button" (click)="imprime()"></i>
+          </div>
+          <div class="dropdown active" style="margin-right: 10px;" style="margin-top: auto;">
+            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownOpc"
+              data-toggle="dropdown" aria-haspopup="true">
+              Opciones
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownOpc">
+              <button class="dropdown-item" [ngClass]="{'active': opc_cont === true}" type="button"
+                (click)="setOpcCont(true)"> Mostrar todo el conteo
+              </button>
+              <button class="dropdown-item" [ngClass]="{'active': opc_cont === false}" type="button"
+                (click)="setOpcCont(false)">
+                Mostrar sólo diferencias
+              </button>
+            </div>
+          </div>
+
+          <!--      <div *ngIf="conteo.estado === 'Guardado';" class="print text-right" data-toggle="tooltip"
+            data-placement="bottom" title="Ajustar en Macro Pro" style="width: 80px">
+            <i role="button" data-toggle="modal" data-target="#ConfirmPass"><img src="assets/ajustar.png"
+                style="width: 100%" alt="Ajustar "></i>
+          </div> -->
+        </div>
+      </div>
+      <div class="d-flex align-items-center p-3 my-3  bg-purple rounded shadow-sm"
+        style="background-color:rgb(245, 245, 245)">
+        <div class="lh-100">
+          <h5>Detalles del conteo</h5>
+          <span style="font-weight:650;">Folio: 000{{this.conteo.id_conteo}}</span><br>
+          <span>Realizado por: {{this.conteo.username}}</span><br>
+          <span>Almacén: {{conteo.nombre_alm}}</span><br>
+          <span>Clasificación: {{conteo.id_clf}} - {{conteo.nom_clf}} </span><br>
+          <span>Fecha: {{conteo.fecha | date:'dd' }} de {{conteo.fecha | date:'MMMM' }} de
+            {{conteo.fecha | date:'yyyy' }}</span><br>
+
+          <span>
+
+            <div class="dropdown">
+              <span>Estado: </span>
+              <button class="btn btn-sm " [ngClass]="{
+                    'btn-success dropdown-toggle':conteo.estado === 'Guardado',
+                    'btn-secondary dropdown-toggle':conteo.estado === 'Revisado',
+                    'btn-primary':conteo.estado === 'Ajustado',
+                    'btn-danger dropdown-toggle':conteo.estado === 'Descartado'
+                  }" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{conteo.estado}}
+              </button>
+
+              <div class="dropdown-menu" *ngIf="conteo.estado === 'Guardado'" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" (click)="changeStatus(1)" style="cursor: pointer">Revisado</a>
+                <a class="dropdown-item" (click)="changeStatus(2)" style="cursor: pointer">Descartado</a>
+              </div>
+              <div class="dropdown-menu" *ngIf="conteo.estado === 'Revisado'" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" (click)="changeStatus(0)" style="cursor: pointer">Guardado</a>
+                <a class="dropdown-item" (click)="changeStatus(2)" style="cursor: pointer">Descartado</a>
+              </div>
+              <div class="dropdown-menu" *ngIf="conteo.estado === 'Descartado'" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" (click)="changeStatus(0)" style="cursor: pointer">Guardado</a>
+                <a class="dropdown-item" (click)="changeStatus(1)" style="cursor: pointer">Revisado</a>
+              </div>
+            </div>
+          </span>
+        </div>
+      </div>
+
+      <div class="input-group flex-nowrap search">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="addon-wrapping"><i class="fas fa-search"></i></span>
+        </div>
+        <input type="text" class="form-control" #search (keyup)="searchProduct(search.value)"
+          aria-describedby="addon-wrapping">
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th style="width: 10%;">Código</th>
+              <th style="width: 40%;">Artículo</th>
+              <th style="text-align: center; width: 10%;">Existencia</th>
+              <th style="text-align: center; width: 10%;">Conteo</th>
+              <th style="text-align: center; width: 10%;">Diferencia</th>
+              <th style="text-align: center; width: 7%;">Series</th>
+              <th style="text-align: center; width: 10%;">Comentarios</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let articulo of articulos_filter | paginate: { itemsPerPage: 50, currentPage: p }"
+              [ngClass]="{' table-danger': articulo.diferencia !== 0 || articulo.es_diferencia}">
+              <td>{{articulo.cod_prod}}</td>
+              <td>{{articulo.descripcion}}</td>
+              <td style="text-align: center;">{{articulo.existencia}}</td>
+              <td style="text-align: center;">{{articulo.conteo}}</td>
+              <td style="text-align: center;font-weight: 500;">{{articulo.diferencia }} </td>
+              <td style="text-align: center;">
+                <button class="btn fa btn-primary rounded-pill fa-check" *ngIf="articulo.es_series === 'S'"
+                  type="button" style="opacity: 1;" (click)="getSeries(Modalseries, articulo)">
+                </button>
+                <button class="btn fa fa-times disabled btn-primary rounded-pill" *ngIf="articulo.es_series === 'N'"
+                  type="button" style="opacity: 1;"></button>
+              </td>
+              <td style="text-align: center;">
+                <button class="btn fa fa-check btn-primary rounded-pill" *ngIf="articulo.comentario.length > 0"
+                  type="button" style="opacity: 1;" (click)="getComentario(Modalcomentarios, articulo)">
+                </button>
+                <button class="btn fa fa-times disabled btn-primary rounded-pill"
+                  *ngIf="articulo.comentario.length <= 0 " type="button" style="opacity: 1;">
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="page">
+        <pagination-controls (pageChange)="p = $event" previousLabel="Anterior" nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+
+<!--MODAL SERIES-->
+<ng-template #Modalseries let-modal>
+  <div class="modal-header back">
+    <h5 class="modal-title h4">Series</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">x</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex align-items-center p-3 bg-purple rounded shadow-sm" style="background-color:rgb(245, 245, 245)">
+      <div class="col-md-5">
+        <span style="font-weight:650;">Conteo: 000{{conteo.id_conteo}}</span><br>
+        <span>Almacén: {{conteo.nombre_alm}}</span><br>
+        <span>Producto: {{articulo_series.cod_prod}}</span><br>
+      </div>
+      <div class="col-md-7">
+        <table class="table table-sm" style="margin: 0">
+          <thead class="thead-dark">
+            <tr>
+              <th class="text-center" scope="col"
+                style="border-top-left-radius: 18px; border: none; background: #a7a7a7;">Existencia</th>
+              <th class="text-center" scope="col" style="border: none;background: #a7a7a7;">Conteo</th>
+              <th class="text-center" scope="col"
+                style="border-top-right-radius: 18px; border: none;background: #a7a7a7;">Diferencias</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="font-family: 'Roboto'; font-weight: bold;">
+              <td class="text-center">{{articulo_series.existencia}}</td>
+              <td class="text-center">{{articulo_series.conteo}}</td>
+              <td class="text-center" [ngStyle]="{'color': color_dif}">{{articulo_series.diferencia}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div> <br>
+    <h6>Series físicas</h6>
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Serie</th>
+          <th scope="col">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let serie of series">
+          <td *ngIf="serie.estatus === 'Disponible';">{{serie.serie}}</td>
+          <td *ngIf="serie.estatus === 'Disponible';" style="font-family: 'Roboto'; font-weight: bold;">
+            {{serie.estatus}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <h6>Series no registradas</h6>
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th scope="col">Serie</th>
+          <th scope="col">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let serie of series">
+          <td *ngIf="serie.estatus != 'Disponible';">{{serie.serie}}</td>
+          <td *ngIf="serie.estatus != 'Disponible';" style="font-family: 'Roboto'; font-weight: bold;">{{serie.estatus}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</ng-template>
+
+<div style="position: fixed; bottom: 3%; left: -3%; width: 100%;">
+  <div class="alert alert-danger" role="alert" *ngIf="success === false"
+    style="text-align: right;float: right;box-shadow: -2px -2px 11px 0px grey">
+    <button type="button" class="close" (click)="closeAlert()" aria-label="Close" style="float:left">
+      <span>&times;</span>
+    </button>
+    <h5 class="alert-heading">Lo intentamos, pero no pudo funcionar...</h5>
+    <hr>
+    <p>Hubo un problema al intentar obtener el control de series</p>
+  </div>
+</div>
+
+<!-- MODAL COMENTARIOS-->
+<ng-template #Modalcomentarios let-modal>
+  <div class="modal-header back">
+    <h5 class="modal-title h4" id="myLargeModalLabel">Comentario del artículo</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">x</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex align-items-center p-3 bg-purple rounded shadow-sm" style="background-color:rgb(245, 245, 245)">
+      <div class="lh-100">
+        <span style="font-weight:650;">Conteo: 000{{this.conteo.id_conteo}}</span><br>
+        <span>Almacén: {{this.conteo.nombre_alm}}</span><br>
+        <span>Producto: {{articulo_coment.cod_prod}} - {{articulo_coment.descripcion}}</span><br>
+      </div>
+    </div> <br>
+    <p style="margin-left: 15px">{{articulo_coment.comentario}}</p>
+  </div>
+</ng-template>
+
+
+<!--MODAL AJUSTE-->
+<div class="modal fade" id="ConfirmPass" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ajustar conteo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <img src="../../../assets/user.png" alt="" style="width:35%"><br>
+            </div>
+          </div> <br>
+          <div class="row">
+            <div class="col-md-12">
+              <span style="font-size: 12pt;
+                font-family: 'roboto';
+                font-weight: bold;">Usuario</span><br>
+              <span>{{usuario}}</span><br><br>
+              <span style="font-size: 12pt;
+                font-family: 'roboto';
+                font-weight: bold;">Confirme su contraseña para continuar</span>
+              <form [formGroup]="ConfirmForm">
+                <input class="form-control" formControlName="passw" type="password" name="passw" id="passw"
+                  placeholder="Contraseña" style="width: 70%;margin-right: auto; margin-left: auto;">
+              </form> <br>
+              <div class="alert alert-success" role="alert" *ngIf="Success === true">
+                <p>Realizando ajuste...</p>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+                    aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+                </div>
+              </div>
+              <div class="alert alert-danger" role="alert" *ngIf="Success === false">
+                Contraseña incorrecta
+              </div>
+              <div>
+                <p style="font-size: 12pt;
+                  font-family: 'roboto';
+                  font-weight: bold;">Esta función aún no está disponible... <br> Estamos trabajando en ello 😉</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary rounded-pill" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary rounded-pill" (click)="checkPass()">Ajustar Conteo</button>
+      </div>
+    </div>
+  </div>
+</div>
