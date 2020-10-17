@@ -37,6 +37,45 @@ export class ConteoService {
       )
   }
 
+  getAgrupados(token) {
+    //console.log("Usuario:", usuario);
+    //console.log(this.global.Admin_URL);
+    let URL = this.global.Admin_URL + 'agrupados';
+    const headers = new Headers(
+      {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+
+    //return this._http.get(URL, options).map(res)
+    return this._http.get(
+      URL, { headers }).pipe(
+        res => {
+          res => res.json();
+          //console.log('ConteoResponse', res);
+          return res;
+        }
+      )
+  }
+
+  postAgrupado(token, agrupado) {
+    //console.log("Usuario:", usuario);
+    //console.log(this.global.Admin_URL);
+    let URL = this.global.Admin_URL + 'agrupar_conteos';
+    const newpres = JSON.stringify(agrupado);
+    
+    const headers = new Headers(
+      {
+        'Content-Type' : 'application/json',
+        'x-access-token' : token,
+      }
+    );
+
+    return this._http.post( URL, newpres, {headers});
+  }
+
   getConteo(token, id) {
     //console.log("Usuario:", usuario);
     //console.log(this.global.Admin_URL);

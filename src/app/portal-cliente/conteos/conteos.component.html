@@ -1,101 +1,178 @@
 <div class="container-fluid">
   <div class="row justify-content-center">
     <main role="main" class="col-md-10">
-      <div
-        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Conteos</h1>
-        <div class="filters">
-
-          <span *ngIf="filter_month">Mes: {{selected_month}}</span>
-          <span class="status" *ngIf="filter_status">Estado: {{selected_status}}</span>
-        </div>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownOpc"
-              data-toggle="dropdown" aria-haspopup="true">
-              Mes
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownOpc">
-              <button class="dropdown-item" type="button" (click)="setFilterMonth(0)"> Todos
-              </button>
-              <button class="dropdown-item" type="button" *ngFor="let month of months"
-                (click)="setFilterMonth(month.Value)"> {{month.Month}}
-              </button>
-
+      <ul class="nav nav-tabs mt-3" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" id="simple-tab" data-toggle="tab" href="#simple" role="tab" aria-controls="simple"
+            aria-selected="true">Simples</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" id="agrupados-tab" data-toggle="tab" href="#agrupados" role="tab" aria-controls="agrupados"
+            aria-selected="false">Agrupados</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="simple" role="tabpanel" aria-labelledby="simple-tab">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Conteos Simples</h1>
+            <div class="filters">
+          
+              <span *ngIf="filter_month">Mes: {{selected_month}}</span>
+              <span class="status" *ngIf="filter_status">Estado: {{selected_status}}</span>
             </div>
-
-          </div>
-          <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownStatus"
-              data-toggle="dropdown" aria-haspopup="true">
-              Estado
-            </button>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownStatus">
-              <button class="dropdown-item" type="button" (click)="setFilterStatus('Todos')"> Todos
-              </button>
-              <button class="dropdown-item" type="button" (click)="setFilterStatus('Guardado')"> Guardados
-              </button>
-              <button class="dropdown-item" type="button" (click)="setFilterStatus('Revisado')"> Revisados
-              </button>
-              <button class="dropdown-item" type="button" (click)="setFilterStatus('Descartado')"> Descartados
-              </button>
-              <button class="dropdown-item" type="button" (click)="setFilterStatus('Ajustado')"> Ajustados
-              </button>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownOpc"
+                  data-toggle="dropdown" aria-haspopup="true">
+                  Mes
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownOpc">
+                  <button class="dropdown-item" type="button" (click)="setFilterMonth(0)"> Todos
+                  </button>
+                  <button class="dropdown-item" type="button" *ngFor="let month of months" (click)="setFilterMonth(month.Value)">
+                    {{month.Month}}
+                  </button>
+          
+                </div>
+          
+              </div>
+              <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownStatus"
+                  data-toggle="dropdown" aria-haspopup="true">
+                  Estado
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownStatus">
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Todos')"> Todos
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Guardado')"> Guardados
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Revisado')"> Revisados
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Descartado')"> Descartados
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Ajustado')"> Ajustados
+                  </button>
+                </div>
+          
+              </div>
+              <button class="btn btn-primary" *ngIf="agrupando==false" (click)="btn_agrupar()"
+                style="margin-right: 10px; margin-top: auto;">Agrupar Conteos</button>
             </div>
-
           </div>
-          <button class="btn btn-primary" *ngIf="agrupando==false" (click)="btn_agrupar()"
-            style="margin-right: 10px; margin-top: auto;">Agrupar</button>
-          <button class="btn btn-success" *ngIf="agrupando==true" (click)="btn_guardar()"
-            style="margin-right: 10px; margin-top: auto;">Guardar</button>
-          <button class="btn btn-info" *ngIf="agrupando==true" (click)="btn_prueba()"
-            style="margin-right: 10px; margin-top: auto;">prueba</button>
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead>
+                <tr>
+                  <th>Folio</th>
+                  <th>Almacén</th>
+                  <th>Usuario</th>
+                  <th>Fecha</th>
+                  <th style="text-align: center;">Estado</th>
+                  <th>Última act.</th>
+                  <th>Clasificación</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+          
+                <tr *ngFor="let conteo of conteos_filter; let i=index;" style="cursor: pointer;">
+                  <td (click)="detalle(conteo)">{{conteo.id_conteo}}</td>
+                  <td (click)="detalle(conteo)">{{conteo.nombre_alm}}</td>
+                  <td (click)="detalle(conteo)">{{conteo.username}}</td>
+                  <td (click)="detalle(conteo)">{{conteo.fecha | date:'dd' }} de {{conteo.fecha | date:'MMMM' }} de
+                    {{conteo.fecha | date:'yyyy' }}
+                  </td>
+                  <td (click)="detalle(conteo)" class="td-estado" style="text-align: center;">
+                    <button type="button" class="btn  btn-estado" [ngClass]="{
+                              'btn-success':conteo.estado === 'Guardado',
+                              'btn-secondary':conteo.estado === 'Revisado',
+                              'btn-primary':conteo.estado === 'Ajustado',
+                              'btn-danger':conteo.estado === 'Descartado'
+                            }">{{conteo.estado}}</button>
+                  </td>
+                  <td (click)="detalle(conteo)">{{conteo.ult_act | date:'dd' }} de {{conteo.fecha | date:'MMMM' }} de
+                    {{conteo.fecha | date:'yyyy' }}
+                  </td>
+                  <td (click)="detalle(conteo)">{{conteo.id_clf}} - {{conteo.nom_clf}}</td>
+                  <td style="text-align: center;">
+                    <input style="height: 25px; width: 25px;" type="checkbox" [(ngModel)]="conteo.selected">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      <div class="table-responsive">
-        <table class="table table-dark">
-          <thead>
-            <tr>
-              <th>Folio</th>
-              <th>Almacen</th>
-              <th>Usuario</th>
-              <th>Fecha</th>
-              <th style="text-align: center;">Estado</th>
-              <th>Última act.</th>
-              <th>Clasificación</th>
-              <th *ngIf="agrupando==true" (click)="btn_agrupar(conteo)">Agrupar</th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <tr *ngFor="let conteo of conteos_filter" style="cursor: pointer;">
-              <td (click)="detalle(conteo)">{{conteo.id_conteo}}</td>
-              <td (click)="detalle(conteo)">{{conteo.nombre_alm}}</td>
-              <td (click)="detalle(conteo)">{{conteo.username}}</td>
-              <td (click)="detalle(conteo)">{{conteo.fecha | date:'dd' }} de {{conteo.fecha | date:'MMMM' }} de
-                {{conteo.fecha | date:'yyyy' }}
-              </td>
-              <td (click)="detalle(conteo)" class="td-estado" style="text-align: center;">
-                <button type="button" class="btn  btn-estado" [ngClass]="{
-                    'btn-success':conteo.estado === 'Guardado',
-                    'btn-secondary':conteo.estado === 'Revisado',
-                    'btn-primary':conteo.estado === 'Ajustado',
-                    'btn-danger':conteo.estado === 'Descartado'
-                  }">{{conteo.estado}}</button>
-              </td>
-              <td (click)="detalle(conteo)">{{conteo.ult_act | date:'dd' }} de {{conteo.fecha | date:'MMMM' }} de
-                {{conteo.fecha | date:'yyyy' }}
-              </td>
-              <td (click)="detalle(conteo)">{{conteo.id_clf}} - {{conteo.nom_clf}}</td>
-              <td style="text-align: center;">
-                <input style="align-items: center;" #chek type="checkbox" *ngIf="agrupando==true"
-                  (change)="toggleVisibility(chek,conteo)" [(ngModel)]="conteo.agrupando">
-              </td>
-            </tr>
-          </tbody>
-
-
-        </table>
+        <div class="tab-pane fade" id="agrupados" role="tabpanel" aria-labelledby="agrupados-tab">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Conteos Agrupados</h1>
+            <div class="filters">
+              <span *ngIf="filter_month">Mes: {{selected_month}}</span>
+              <span class="status" *ngIf="filter_status">Estado: {{selected_status}}</span>
+            </div>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownOpc"
+                  data-toggle="dropdown" aria-haspopup="true">
+                  Mes
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownOpc">
+                  <button class="dropdown-item" type="button" (click)="setFilterMonth(0)"> Todos
+                  </button>
+                  <button class="dropdown-item" type="button" *ngFor="let month of months" (click)="setFilterMonth(month.Value)">
+                    {{month.Month}}
+                  </button>
+          
+                </div>
+          
+              </div>
+              <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownStatus"
+                  data-toggle="dropdown" aria-haspopup="true">
+                  Estado
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownStatus">
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Todos')"> Todos
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Guardado')"> Guardados
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Revisado')"> Revisados
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Descartado')"> Descartados
+                  </button>
+                  <button class="dropdown-item" type="button" (click)="setFilterStatus('Ajustado')"> Ajustados
+                  </button>
+                </div>
+          
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-dark">
+              <thead>
+                <tr>
+                  <th>Folio</th>
+                  <th>Descripción</th>
+                  <th>Almacén</th>
+                  <th>Usuario</th>
+                  <th>Fecha</th>
+                  <th style="text-align: center;">Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+          
+                <tr *ngFor="let conteo of agrupados_filter" style="cursor: pointer;">
+                  <td (click)="detalle(conteo)">{{conteo.id_agrupado}}</td>
+                  <td (click)="detalle(conteo)">{{conteo.descipcion}}</td>
+                  <td (click)="detalle(conteo)">{{conteo.nombre_alm}}</td>
+                  <td (click)="detalle(conteo)">{{conteo.username}}</td>
+                  <td (click)="detalle(conteo)">{{conteo.fecha_creacion | date:'dd' }} de {{conteo.fecha_creacion | date:'MMMM' }} de
+                    {{conteo.fecha_creacion | date:'yyyy' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </main>
   </div>

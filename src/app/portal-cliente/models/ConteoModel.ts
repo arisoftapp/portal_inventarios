@@ -12,4 +12,5 @@ export class Conteo {
     id_clf;
     nom_clf;
     agrupando;
+    selected: false;
 }

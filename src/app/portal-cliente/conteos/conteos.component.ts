@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ConteoService } from '../services/conteo.service';
 import { Conteo } from '../models/ConteoModel';
+import { Agrupado } from '../models/AgrupadoModel';
 import { Global } from '../models/global';
 import { UserService } from '../services/user.service';
 import { User } from '../models/UserModel';
@@ -10,6 +11,7 @@ import { registerLocaleData } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toDate } from '@angular/common/src/i18n/format_date';
 import { Month } from '../models/MonthModel';
+import swal from 'sweetalert';
 
 @Component({
   selector: 'app-conteos',
@@ -19,10 +21,13 @@ import { Month } from '../models/MonthModel';
 export class ConteosComponent implements OnInit {
   global: Global;
   token;
+  agrupado: Agrupado;
   conteos: Conteo[];
+  agrupados: Agrupado[];
   conteos_disp_group: Conteo[];
   conteos_seleccionados: Conteo[];
   conteos_filter: Conteo[];
+  agrupados_filter: Agrupado[];
   conteos_mes: Conteo[];
   conteos_status: Conteo[];
   Resp;
@@ -57,6 +62,7 @@ export class ConteosComponent implements OnInit {
 
   ngOnInit() {
     this.cargarConteosBD();
+    this.getAgrupados();
   }
   cargarConteosBD() {
     this.token = this.service.getToken();
@@ -71,7 +77,28 @@ export class ConteosComponent implements OnInit {
         } else {
           this.conteos = this.jey.conteos;
           this.conteos_filter = this.conteos;
-          console.log(this.conteos);
+          //console.log(this.conteos);
+        }
+        error => {
+          console.log(<any>error);
+        }
+      });
+  }
+
+  getAgrupados(){
+    this.token = this.service.getToken();
+    this.conteo_ser.getAgrupados(this.token).subscribe(
+      (response: any) => {
+        this.Resp = response;
+        this.texto = this.Resp._body;
+        this.jey = JSON.parse(this.texto);
+        if (!this.jey.conteos) {
+          console.log("ERROR EN LECTURA DE CONTEOS");
+          //console.log(this.jey.conteos);
+        } else {
+          this.agrupados = this.jey.conteos;
+          this.agrupados_filter = this.agrupados;
+          //console.log(this.conteos);
         }
         error => {
           console.log(<any>error);
@@ -93,9 +120,50 @@ export class ConteosComponent implements OnInit {
   detalle(conteo: Conteo) {
     this.router.navigate(['portal-cliente/consulta/', conteo.id_conteo]);
   }
-  btn_agrupar(conteo: Conteo) {
-    this.agrupando = true;
-    this.setConteosDisp();
+  btn_agrupar() {
+    let selected = [];
+    let folios = [];
+    let id_alm;
+    let error = false;
+    this.conteos_filter.map((conteo) => {
+      if (conteo.selected){
+        selected.push(conteo);
+      }
+    });
+    if (selected.length >= 2){
+      id_alm = selected[0].id_alm;
+      selected.map((conteo) => {
+        if (conteo.id_alm != id_alm){
+          swal("Error", "Los conteos deben pertenecer al mismo almacén", "error");
+          error = true;
+        } else {
+          folios.push(conteo.id_conteo);
+        }
+      });
+      if (!error){
+        console.log(folios.join());
+        this.agrupado = new Agrupado;
+        this.agrupado.id_agrupado = folios.join();
+        this.agrupado.descripcion = 'Nuevo conteo agrupado';
+        this.agrupado.id_empresa = selected[0].id_empresa;
+        this.agrupado.id_alm = selected[0].id_alm;
+        this.agrupado.nombre_alm = selected[0].nombre_alm;
+        this.conteo_ser.postAgrupado(this.token, this.agrupado).subscribe(
+          (resp: any) => {
+            if (resp.success) {
+              swal("Éxito", resp.message, "success");
+              this.cargarConteosBD();
+              this.getAgrupados();
+            }
+            error => {
+              console.log(<any>error);
+              swal("Error", resp.message, "error");
+            }
+          });
+      }
+    } else {
+      swal("Error", "Debes seleccionar al menos dos conteos para agruparlos", "error");
+    }
   }
   btn_guardar(conteo: Conteo) {
     this.agrupando = false;
