@@ -1,0 +1,33 @@
+.back{
+    background: rgb(20,132,213);
+    background: linear-gradient(90deg, rgba(20,132,213,1) 0%, rgba(152,240,255,1) 100%);
+    font-family: 'Roboto';
+    color: white;
+}
+
+.print{
+    padding-right: 15px;
+    padding-left: 15px;
+    font-size: 17pt;
+    margin-right: 10px;
+    color: #454c52;
+    cursor: pointer;
+}
+
+.print:hover{
+    color: #2100d6;
+}
+
+.modal-full {
+    min-width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.page{
+    text-align: right;
+}
+
+.search {
+    margin-bottom: 15px;
+}

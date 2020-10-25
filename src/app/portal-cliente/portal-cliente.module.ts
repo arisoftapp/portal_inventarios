@@ -17,6 +17,7 @@ import { ConteoService } from './services/conteo.service';
 import { ImprimeComponent } from './imprime/imprime.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ConteosAgrupadosComponent } from './conteos-agrupados/conteos-agrupados.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     LoginComponent, 
     MainComponent, 
     ConteosComponent, 
-    ImprimeComponent
+    ImprimeComponent, ConteosAgrupadosComponent
   ],
 
   imports: [
@@ -38,6 +39,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgxSpinnerModule
   ],
 
-  bootstrap: [ConteoComponent]
+  bootstrap: [ConteoComponent, ConteosAgrupadosComponent]
 })
 export class PortalClienteModule { }

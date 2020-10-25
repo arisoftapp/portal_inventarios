@@ -161,12 +161,20 @@
               <tbody>
           
                 <tr *ngFor="let conteo of agrupados_filter" style="cursor: pointer;">
-                  <td (click)="detalle(conteo)">{{conteo.id_agrupado}}</td>
-                  <td (click)="detalle(conteo)">{{conteo.descipcion}}</td>
-                  <td (click)="detalle(conteo)">{{conteo.nombre_alm}}</td>
-                  <td (click)="detalle(conteo)">{{conteo.username}}</td>
-                  <td (click)="detalle(conteo)">{{conteo.fecha_creacion | date:'dd' }} de {{conteo.fecha_creacion | date:'MMMM' }} de
+                  <td (click)="detalleAgrupado(conteo)">{{conteo.id_conteo_agrupado}}</td>
+                  <td (click)="detalleAgrupado(conteo)">{{conteo.descripcion}}</td>
+                  <td (click)="detalleAgrupado(conteo)">{{conteo.nombre_alm}}</td>
+                  <td (click)="detalleAgrupado(conteo)">{{conteo.username}}</td>
+                  <td (click)="detalleAgrupado(conteo)">{{conteo.fecha_creacion | date:'dd' }} de {{conteo.fecha_creacion | date:'MMMM' }} de
                     {{conteo.fecha_creacion | date:'yyyy' }}
+                  </td>
+                  <td (click)="detalleAgrupado(conteo)" class="td-estado" style="text-align: center;">
+                    <button type="button" class="btn  btn-estado" [ngClass]="{
+                                                'btn-success':conteo.estado === 'Guardado',
+                                                'btn-secondary':conteo.estado === 'Revisado',
+                                                'btn-primary':conteo.estado === 'Ajustado',
+                                                'btn-danger':conteo.estado === 'Descartado'
+                                              }">{{conteo.estado}}</button>
                   </td>
                 </tr>
               </tbody>

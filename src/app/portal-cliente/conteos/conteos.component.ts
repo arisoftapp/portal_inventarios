@@ -120,6 +120,12 @@ export class ConteosComponent implements OnInit {
   detalle(conteo: Conteo) {
     this.router.navigate(['portal-cliente/consulta/', conteo.id_conteo]);
   }
+
+  detalleAgrupado(conteo: Agrupado) {
+    console.log(conteo);
+    this.router.navigate(['portal-cliente/consulta-agrupado/', conteo.id_conteo_agrupado]);
+  }
+
   btn_agrupar() {
     let selected = [];
     let folios = [];
@@ -143,20 +149,20 @@ export class ConteosComponent implements OnInit {
       if (!error){
         console.log(folios.join());
         this.agrupado = new Agrupado;
-        this.agrupado.id_agrupado = folios.join();
+        this.agrupado.id_conteo_agrupado = folios.join();
         this.agrupado.descripcion = 'Nuevo conteo agrupado';
         this.agrupado.id_empresa = selected[0].id_empresa;
         this.agrupado.id_alm = selected[0].id_alm;
         this.agrupado.nombre_alm = selected[0].nombre_alm;
         this.conteo_ser.postAgrupado(this.token, this.agrupado).subscribe(
-          (resp: any) => {
+          (response: any) => {
+            console.log(response._body);
+            let resp = JSON.parse(response._body);
             if (resp.success) {
               swal("Éxito", resp.message, "success");
               this.cargarConteosBD();
               this.getAgrupados();
-            }
-            error => {
-              console.log(<any>error);
+            } else {
               swal("Error", resp.message, "error");
             }
           });

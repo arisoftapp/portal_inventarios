@@ -4,6 +4,7 @@ import { ConteoComponent } from '../portal-cliente/conteo/conteo.component';
 import { LoginComponent } from '../portal-cliente/login/login.component';
 import { MainComponent } from '../portal-cliente/main/main.component';
 import { ConteosComponent } from '../portal-cliente/conteos/conteos.component';
+import { ConteosAgrupadosComponent } from '../portal-cliente/conteos-agrupados/conteos-agrupados.component';
 import { ImprimeComponent } from '../portal-cliente/imprime/imprime.component';
 
 const adminRoutes: Routes = [
@@ -19,6 +20,7 @@ const adminRoutes: Routes = [
         children : [
             { path : '', component : ConteosComponent}, //LISTA DE CONTEOS
             { path : 'consulta/:id', component : ConteoComponent}, //DETALLE DE CONTEO
+            { path: 'consulta-agrupado/:id', component: ConteosAgrupadosComponent }, //DETALLE DE CONTEO AGRUPADO
             { path : 'imprime-conteo/:id/:tipo', component : ImprimeComponent},
             { path: '**', redirectTo: 'portal-cliente', pathMatch: 'full' },
             
