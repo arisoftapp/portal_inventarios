@@ -9,3 +9,6 @@
 .status{
     margin-left: 20px;
 }
+.swal-button .sweet-ok{
+    background-color: #005179;
+}

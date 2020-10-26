@@ -1,4 +1,15 @@
-<ngx-spinner></ngx-spinner>
+<div class="loading" [ngStyle]="{'display': this.loading ? 'block' : 'none' }" >
+  <div>
+    <div class="dot dot-1"></div>
+    <div class="dot dot-2"></div>
+    <div class="dot dot-3"></div>
+    <div class="dot dot-4"></div>
+    <div class="dot dot-5"></div>
+    <div class="dot dot-6"></div>
+    <div class="dot dot-7"></div>
+    <p class="loading-text">Cargando conteo...</p>
+  </div>
+</div>
 <div class="container-fluid">
   <div class="row justify-content-center">
     <main role="main" class="col-md-10">
@@ -140,7 +151,6 @@
     </main>
   </div>
 </div>
-
 
 <!--MODAL SERIES-->
 <ng-template #Modalseries let-modal>

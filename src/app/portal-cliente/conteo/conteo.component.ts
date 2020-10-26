@@ -15,6 +15,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 
+
 import { ImprimeComponent } from '../imprime/imprime.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -59,11 +60,11 @@ export class ConteoComponent implements OnInit {
   opc_cont = true; // Si es 'true', sólo diferencias. Si es 'false', todo el conteo.
   ConfirmForm: FormGroup;
   p: number = 1;
+  loading = false;
 
   constructor(public service: UserService, public conteo_ser: ConteoService, private router: Router,
     private activatedRouter: ActivatedRoute, public ajuste_ser: AjusteService, private pf: FormBuilder,
-    private datePipe: DatePipe, private commentsModal: NgbModal, private seriesModal: NgbModal, private ajusteModal: NgbModal,
-    private spinnerService: NgxSpinnerService) {
+    private datePipe: DatePipe, private commentsModal: NgbModal, private seriesModal: NgbModal, private ajusteModal: NgbModal) {
     this.global = new Global;
     registerLocaleData(localeMX);
     this.ConfirmForm = this.pf.group({
@@ -72,14 +73,14 @@ export class ConteoComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner();
+    this.loading = true;
     this.token = this.service.getToken();
     this.user = this.service.getIdentity();
     this.usuario = JSON.parse(localStorage.getItem('user'));
-    //console.log(this.user.Empresa + " usuario: " + this.usuario );
     this.getConteo();
-    this.getConteoDet();
+    this.getConteoDet(); 
   }
+
 
   getConteo() {
     this.activatedRouter.params.subscribe(params => {
@@ -111,6 +112,7 @@ export class ConteoComponent implements OnInit {
         var jey = JSON.parse(texto);
         if (!jey.articulos) {
           console.log("ERROR EN LECTURA DE DETALLE DEL CONTEO");
+          this.loading = false;
           //console.log(jey.articulos);
         } else {
           this.articulos = jey.articulos;
@@ -123,14 +125,6 @@ export class ConteoComponent implements OnInit {
       });
   }
 
-  spinner() {
-    this.spinnerService.show();
-
-    setTimeout(() => {
-      /** spinner ends after 5 seconds */
-      this.spinnerService.hide();
-    }, 5000);
-  }
 
   searchProduct(search: string) {
     this.articulos_filter = this.articulos;
@@ -433,6 +427,7 @@ export class ConteoComponent implements OnInit {
       }
     }
     this.setOpcCont(true);
+    this.loading = false;
   }
 
   getAllSeries() {
@@ -443,6 +438,7 @@ export class ConteoComponent implements OnInit {
         var jey = JSON.parse(texto);
         if (!jey.series) {
           console.log("ERROR EN LECTURA DE SERIES");
+          this.loading = false;
           //console.log(jey.series[0]);
           this.success = false;
         } else {

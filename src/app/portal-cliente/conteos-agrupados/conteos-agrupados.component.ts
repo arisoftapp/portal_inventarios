@@ -15,6 +15,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-conteos-agrupados',
@@ -58,6 +59,7 @@ export class ConteosAgrupadosComponent implements OnInit {
   opc_cont = true; // Si es 'true', sólo diferencias. Si es 'false', todo el conteo.
   ConfirmForm: FormGroup;
   p: number = 1;
+  loading = false;
 
   constructor(public service: UserService, public conteo_ser: ConteoService, private router: Router,
     private activatedRouter: ActivatedRoute, public ajuste_ser: AjusteService, private pf: FormBuilder,
@@ -71,11 +73,10 @@ export class ConteosAgrupadosComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.spinner();
+    this.loading = true;
     this.token = this.service.getToken();
     this.user = this.service.getIdentity();
     this.usuario = JSON.parse(localStorage.getItem('user'));
-    //console.log(this.user.Empresa + " usuario: " + this.usuario );
     this.getConteoAgrupado();
   }
 
@@ -90,13 +91,14 @@ export class ConteosAgrupadosComponent implements OnInit {
           var jey = JSON.parse(texto);
           if (!jey.conteos) {
             console.log("ERROR EN LECTURA DE CONTEO");
-            //console.log(jey.conteos[0]);
+            this.loading = false;
           } else {
             this.agrupado = jey.conteos[0];
             console.log("CONTEO:", this.agrupado);
           }
           error => {
             console.log(<any>error + "ON INIT ERROR");
+            this.loading = false;
           }
         });
     })
@@ -110,7 +112,7 @@ export class ConteosAgrupadosComponent implements OnInit {
         var jey = JSON.parse(texto);
         if (!jey.articulos) {
           console.log("ERROR EN LECTURA DE DETALLE DEL CONTEO");
-          //console.log(jey.articulos);
+          this.loading = false;
         } else {
           this.articulos = jey.articulos;
           this.conteos_simples = jey.conteos;
@@ -216,11 +218,24 @@ export class ConteosAgrupadosComponent implements OnInit {
 
     return "xd"
   }
+
+  desagrupar(){
+    Swal.fire({
+      text: "¿Está seguro que desea desagrupar estos conteos?",
+      icon: 'warning',
+      confirmButtonColor: "#DD6B55",
+      showCancelButton: true,
+      confirmButtonText: `Sí`,
+      cancelButtonText: 'No',
+    }).then((result) => {
+      console.log(result);
+      if (result.value) {
+        Swal.fire( '', 'Se han desagrupado los conteos', 'success')
+      } 
+    })
+  }
+
   generar_txt() {
-
-    //console.log(this.prueba_serie("SERIE2"))
-
-
     var long_cant = 12;
     var entradas = "";
     var renglon = "";
@@ -433,6 +448,7 @@ export class ConteosAgrupadosComponent implements OnInit {
       }
     }
     this.setOpcCont(true);
+    this.loading = false;
   }
 
   getAllSeries() {
@@ -443,12 +459,11 @@ export class ConteosAgrupadosComponent implements OnInit {
         var jey = JSON.parse(texto);
         if (!jey.series) {
           console.log("ERROR EN LECTURA DE SERIES");
-          //console.log(jey.series[0]);
+          this.loading = false;
           this.success = false;
         } else {
           this.allseries = jey.series;
           this.setEsDiferencia();
-          //console.log("ARTICULO_SERIES " , this.series);
         }
         error => {
           console.log(<any>error);

@@ -11,7 +11,7 @@ import { registerLocaleData } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { toDate } from '@angular/common/src/i18n/format_date';
 import { Month } from '../models/MonthModel';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 
 @Component({
   selector: 'app-conteos',
@@ -62,7 +62,7 @@ export class ConteosComponent implements OnInit {
 
   ngOnInit() {
     this.cargarConteosBD();
-    this.getAgrupados();
+    
   }
   cargarConteosBD() {
     this.token = this.service.getToken();
@@ -71,10 +71,17 @@ export class ConteosComponent implements OnInit {
         this.Resp = response;
         this.texto = this.Resp._body;
         this.jey = JSON.parse(this.texto);
-        if (!this.jey.conteos) {
+        if (!this.jey.success || !this.jey.conteos) {
+          Swal.fire({
+            title: "Error", 
+            text: 'La sesión ha caducado.', 
+            icon: "error", 
+            confirmButtonColor: "#DD6B55",
+          });
           console.log("ERROR EN LECTURA DE CONTEOS");
           //console.log(this.jey.conteos);
         } else {
+          this.getAgrupados();
           this.conteos = this.jey.conteos;
           this.conteos_filter = this.conteos;
           //console.log(this.conteos);
@@ -140,7 +147,12 @@ export class ConteosComponent implements OnInit {
       id_alm = selected[0].id_alm;
       selected.map((conteo) => {
         if (conteo.id_alm != id_alm){
-          swal("Error", "Los conteos deben pertenecer al mismo almacén", "error");
+          Swal.fire({
+            title: "Error",
+            text: "Los conteos deben pertenecer al mismo almacén.",
+            icon: "error",
+            confirmButtonColor: "#DD6B55",
+          });
           error = true;
         } else {
           folios.push(conteo.id_conteo);
@@ -159,16 +171,31 @@ export class ConteosComponent implements OnInit {
             console.log(response._body);
             let resp = JSON.parse(response._body);
             if (resp.success) {
-              swal("Éxito", resp.message, "success");
+              Swal.fire({
+                title: "Éxito",
+                text: resp.message,
+                icon: "success",
+                confirmButtonColor: "#4CAF50",
+              });
               this.cargarConteosBD();
               this.getAgrupados();
             } else {
-              swal("Error", resp.message, "error");
+              Swal.fire({
+                title: "Error",
+                text: resp.message,
+                icon: "error",
+                confirmButtonColor: "#DD6B55",
+              });
             }
           });
       }
     } else {
-      swal("Error", "Debes seleccionar al menos dos conteos para agruparlos", "error");
+      Swal.fire({
+        title: "Error",
+        text: "Debes seleccionar al menos dos conteos para agruparlos",
+        icon: "error",
+        confirmButtonColor: "#DD6B55",
+      });
     }
   }
   btn_guardar(conteo: Conteo) {
