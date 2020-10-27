@@ -38,7 +38,7 @@ export class ConteosComponent implements OnInit {
   agrupando: boolean = false;
   selected_month: number;
   selected_status: String;
-
+  busqueda = '';
 
   months: Month[] = [
     new Month(1, "Enero"),
@@ -73,7 +73,6 @@ export class ConteosComponent implements OnInit {
         this.jey = JSON.parse(this.texto);
         if (!this.jey.success || !this.jey.conteos) {
           Swal.fire({
-            title: "Error", 
             text: 'La sesión ha caducado.', 
             icon: "error", 
             confirmButtonColor: "#DD6B55",
@@ -148,9 +147,8 @@ export class ConteosComponent implements OnInit {
       selected.map((conteo) => {
         if (conteo.id_alm != id_alm){
           Swal.fire({
-            title: "Error",
             text: "Los conteos deben pertenecer al mismo almacén.",
-            icon: "error",
+            icon: "warning",
             confirmButtonColor: "#DD6B55",
           });
           error = true;
@@ -168,11 +166,9 @@ export class ConteosComponent implements OnInit {
         this.agrupado.nombre_alm = selected[0].nombre_alm;
         this.conteo_ser.postAgrupado(this.token, this.agrupado).subscribe(
           (response: any) => {
-            console.log(response._body);
             let resp = JSON.parse(response._body);
             if (resp.success) {
               Swal.fire({
-                title: "Éxito",
                 text: resp.message,
                 icon: "success",
                 confirmButtonColor: "#4CAF50",
@@ -191,9 +187,8 @@ export class ConteosComponent implements OnInit {
       }
     } else {
       Swal.fire({
-        title: "Error",
         text: "Debes seleccionar al menos dos conteos para agruparlos",
-        icon: "error",
+        icon: "warning",
         confirmButtonColor: "#DD6B55",
       });
     }
@@ -212,6 +207,25 @@ export class ConteosComponent implements OnInit {
     }
     this.conteos_filter = this.conteos_disp_group;
     //console.log(this.conteos_disp_group);
+  }
+
+  buscar() {
+    if (this.busqueda.length > 0) {
+      this.conteo_ser.buscar(this.token, this.busqueda).subscribe(
+        (response: any) => {
+          let resp = JSON.parse(response._body);
+          if (resp.success) {
+            this.conteos = resp.data;
+            this.conteos_filter = resp.data;
+          }
+          error => {
+            console.log(<any>error);
+          }
+        });
+    } else {
+      this.cargarConteosBD();
+    }
+
   }
 
 

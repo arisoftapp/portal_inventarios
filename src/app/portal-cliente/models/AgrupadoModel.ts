@@ -7,4 +7,6 @@ export class Agrupado {
     id_usuario;
     nombre_alm;
     username;
+    estado;
+    fecha;
 }

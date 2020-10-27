@@ -151,7 +151,7 @@ export class ConteosAgrupadosComponent implements OnInit {
   }
 
   changeStatus(status) {
-    this.conteo_ser.putContStatus(this.token, this.id, status).subscribe(
+    this.conteo_ser.putAgrupadoStatus(this.token, this.id, status).subscribe(
       (response: any) => {
         var Resp = response;
         var texto = Resp._body;

@@ -64,7 +64,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="inputGroup-sizing-sm"><i class="fas fa-search"></i></span>
               </div>
-              <input type="text" class="form-control" placeholder="Buscar almacén, usuario o clasificación">
+              <input (keyup)="buscar()" [(ngModel)]="busqueda" type="text" class="form-control" placeholder="Buscar almacén, usuario o clasificación">
             </div>
           </div>
           <div class="table-responsive">

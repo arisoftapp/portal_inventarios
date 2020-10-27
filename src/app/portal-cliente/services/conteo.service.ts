@@ -188,10 +188,55 @@ export class ConteoService {
       )
   }
 
+  putAgrupadoStatus(token, cont_id, status) {
+    let URL = this.global.Admin_URL + 'agrupado/chgstatus/' + status + '/' + cont_id;
+    const headers = new Headers(
+      {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      }
+    );
+    let options = new RequestOptions({ headers: headers });
+
+    //return this._http.get(URL, options).map(res)
+    return this._http.get(
+      URL, { headers }).pipe(
+        res => {
+          res => res.json();
+          console.log('StatusResponse', res);
+          return res;
+        }
+      )
+  }
+
   getSeries(token, idconteo, cod_prod) {
     //console.log("Usuario:", usuario);
     //console.log(this.global.Admin_URL);
     let URL = this.global.Admin_URL + 'getseries/' + idconteo + '/' + cod_prod;
+    const headers = new Headers(
+      {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      }
+    );
+
+    let options = new RequestOptions({ headers: headers });
+
+    //return this._http.get(URL, options).map(res)
+    return this._http.get(
+      URL, { headers }).pipe(
+        res => {
+          res => res.json();
+          //console.log('ConteoResponse', res);
+          return res;
+        }
+      )
+  }
+
+  buscar(token, busqueda) {
+    //console.log("Usuario:", usuario);
+    //console.log(this.global.Admin_URL);
+    let URL = this.global.Admin_URL + 'buscar/' + busqueda;
     const headers = new Headers(
       {
         'Content-Type': 'application/json',
