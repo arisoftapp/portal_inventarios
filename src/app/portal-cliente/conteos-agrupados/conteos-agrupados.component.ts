@@ -125,15 +125,6 @@ export class ConteosAgrupadosComponent implements OnInit {
       });
   }
 
-  spinner() {
-    this.spinnerService.show();
-
-    setTimeout(() => {
-      /** spinner ends after 5 seconds */
-      this.spinnerService.hide();
-    }, 5000);
-  }
-
   searchProduct(search: string) {
     this.articulos_filter = this.articulos;
     if (search.length > 0) {
@@ -147,7 +138,6 @@ export class ConteosAgrupadosComponent implements OnInit {
         }
       }
     }
-
   }
 
   changeStatus(status) {
@@ -178,6 +168,7 @@ export class ConteosAgrupadosComponent implements OnInit {
       this.router.navigate(['portal-cliente/imprime-conteo/' + this.id + '/diferencias']);
     }
   }
+  
   prueba_serie(codigo) {
     var renglon_series = "";
     for (let serie of this.allseries) {
@@ -230,7 +221,24 @@ export class ConteosAgrupadosComponent implements OnInit {
     }).then((result) => {
       console.log(result);
       if (result.value) {
-        Swal.fire( '', 'Se han desagrupado los conteos', 'success')
+        let folios = [];
+        this.conteos_simples.map((conteo) => {
+          folios.push(conteo.id_conteo);
+        });
+        console.log(this.agrupado.id_conteo_agrupado, folios.join());
+        this.conteo_ser.deleteAgrupado(this.token, this.agrupado.id_conteo_agrupado, folios.join()).subscribe(
+          (response: any) => {
+            var Resp = response;
+            var texto = Resp._body;
+            var jey = JSON.parse(texto);
+            if (jey.success){
+              Swal.fire('', jey.message, 'success').then((result) => {
+                this.router.navigate(['/portal-cliente']);
+              });
+            } else{
+              Swal.fire('', jey.message, 'error');
+            }
+        });
       } 
     })
   }

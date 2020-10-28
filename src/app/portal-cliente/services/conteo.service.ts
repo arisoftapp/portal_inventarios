@@ -253,6 +253,29 @@ export class ConteoService {
           res => res.json();
           //console.log('ConteoResponse', res);
           return res;
+        })
+  }
+
+  deleteAgrupado(token, id_agrupado, conteos) {
+    //console.log("Usuario:", usuario);
+    //console.log(this.global.Admin_URL);
+    let URL = this.global.Admin_URL + 'desagrupar/' + id_agrupado + '/' + conteos; 
+    const headers = new Headers(
+      {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      }
+    );
+
+    let options = new RequestOptions({ headers: headers });
+
+    //return this._http.get(URL, options).map(res)
+    return this._http.delete(
+      URL, { headers }).pipe(
+        res => {
+          res => res.json();
+          //console.log('ConteoResponse', res);
+          return res;
         }
       )
   }

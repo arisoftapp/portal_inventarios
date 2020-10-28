@@ -227,8 +227,7 @@ export class ConteosComponent implements OnInit {
     }
 
   }
-
-
+  
   setFilterMonth(month: number) {
     if (month !== 0) {
       this.filter_month = true;
