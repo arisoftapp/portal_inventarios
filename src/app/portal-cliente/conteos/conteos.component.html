@@ -16,14 +16,28 @@
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mb-3 border-bottom">
             <h1 class="h2">Conteos Simples</h1>
             <div class="filters">
-          
-              <span *ngIf="filter_month">Mes: {{selected_month}}</span>
+              <span *ngIf="filter_year">Año: {{selected_year}}</span>
+              <span class="status" *ngIf="filter_month">Mes: {{selected_month}}</span>
               <span class="status" *ngIf="filter_status">Estado: {{selected_status}}</span>
             </div>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownOpc"
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownYear"
                   data-toggle="dropdown" aria-haspopup="true">
+                  Año
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownOpc">
+                  <button class="dropdown-item" type="button" (click)="setFilterYear(0)"> Todos
+                  </button>
+                  <button class="dropdown-item" type="button" *ngFor="let year of years" (click)="setFilterYear(year)">
+                    {{year}}
+                  </button>
+                </div>
+              </div>
+
+              <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownOpc" data-toggle="dropdown"
+                  aria-haspopup="true">
                   Mes
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownOpc">
@@ -32,10 +46,9 @@
                   <button class="dropdown-item" type="button" *ngFor="let month of months" (click)="setFilterMonth(month.Value)">
                     {{month.Month}}
                   </button>
-          
                 </div>
-          
               </div>
+
               <div class="dropdown active" style="margin-right: 10px; margin-top: auto;">
                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownStatus"
                   data-toggle="dropdown" aria-haspopup="true">

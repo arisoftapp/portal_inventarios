@@ -29,16 +29,21 @@ export class ConteosComponent implements OnInit {
   conteos_filter: Conteo[];
   agrupados_filter: Agrupado[];
   conteos_mes: Conteo[];
+  conteos_year: Conteo[];
   conteos_status: Conteo[];
   Resp;
   texto;
   jey;
+  filter_year: boolean = false;
   filter_month: boolean = false;
   filter_status: boolean = false;
   agrupando: boolean = false;
+  selected_year: number;
   selected_month: number;
   selected_status: String;
   busqueda = '';
+
+  years = [];
 
   months: Month[] = [
     new Month(1, "Enero"),
@@ -53,7 +58,7 @@ export class ConteosComponent implements OnInit {
     new Month(10, "Octubre"),
     new Month(11, "Noviembre"),
     new Month(12, "Diciembre"),
-  ]
+  ];
 
   constructor(public service: UserService, public conteo_ser: ConteoService, private router: Router) {
     this.global = new Global;
@@ -62,8 +67,18 @@ export class ConteosComponent implements OnInit {
 
   ngOnInit() {
     this.cargarConteosBD();
-    
+    this.getYears();
   }
+
+  getYears(){
+    let years = [];
+    let currentYear = new Date().getFullYear();
+    for (let a = 2018; a <= currentYear; a++){
+      years.push(a);
+    };
+    this.years = years;
+  }
+
   cargarConteosBD() {
     this.token = this.service.getToken();
     this.conteo_ser.getConteosAll(this.token).subscribe(
@@ -227,6 +242,16 @@ export class ConteosComponent implements OnInit {
     }
 
   }
+
+  setFilterYear(year: number) {
+    if (year !== 0) {
+      this.filter_year = true;
+      this.selected_year = year;
+    } else {
+      this.filter_year = false;
+    }
+    this.setFilters();
+  }
   
   setFilterMonth(month: number) {
     if (month !== 0) {
@@ -253,6 +278,7 @@ export class ConteosComponent implements OnInit {
   setFilters() {
     this.conteos_mes = [];
     this.conteos_status = [];
+    
     //FILTRAR POR MES SELECCIONADO
     if (this.filter_month) {
       //console.log("Selected Month: " + this.selected_month);
@@ -263,6 +289,18 @@ export class ConteosComponent implements OnInit {
         if (mes === this.selected_month) {
           this.conteos_mes.push(conteo);
         }
+      }
+      if (this.filter_year){
+        let conteos_anio = [];
+        for (let conteo of this.conteos_mes) {
+          var date = new Date(conteo.fecha);
+          var anio = date.getFullYear();
+          //console.log("Mes " + mes);
+          if (anio === this.selected_year) {
+            conteos_anio.push(conteo);
+          }
+        }
+        this.conteos_mes = conteos_anio;
       }
       if (this.filter_status) {
         //console.log("Selected Status", this.selected_status);
@@ -277,7 +315,6 @@ export class ConteosComponent implements OnInit {
         //SI HAY MES PERO NO ESTADO SELECCIONADO.
         this.conteos_filter = this.conteos_mes;
       }
-
     } else {
       //FILTRAR POR ESTADO SELECCIONADO
       if (this.filter_status) {
@@ -287,11 +324,37 @@ export class ConteosComponent implements OnInit {
             this.conteos_status.push(conteo);
           }
         }
+        if (this.filter_year) {
+          let conteos_anio = [];
+          for (let conteo of this.conteos_status) {
+            var date = new Date(conteo.fecha);
+            var anio = date.getFullYear();
+            //console.log("Mes " + mes);
+            if (anio === this.selected_year) {
+              conteos_anio.push(conteo);
+            }
+          }
+          this.conteos_status = conteos_anio;
+        }
         this.conteos_filter = this.conteos_status; //SI HAY ESTADO PERO NO MES SELECCIONADO
       } else {
-        this.conteos_filter = this.conteos;
+        if (this.filter_year) {
+          let conteos_anio = [];
+          for (let conteo of this.conteos) {
+            var date = new Date(conteo.fecha);
+            var anio = date.getFullYear();
+            //console.log("Mes " + mes);
+            if (anio === this.selected_year) {
+              conteos_anio.push(conteo);
+            }
+          }
+          this.conteos_filter = conteos_anio;
+        } else {
+          this.conteos_filter = this.conteos;
+        }
+        
       }
-    }
+    } 
     //console.log(this.conteos_filter);
   }
 
